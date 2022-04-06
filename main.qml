@@ -1,11 +1,18 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 
+import cpp.dialogue 1.0
+
 ApplicationWindow {
     visible: true
     width: 300
     height: 500
     title: qsTr("Сканер QR")
+
+    Dialogue
+    {
+        id: dialogue
+    }
 
     Frame {
         id: frameBeforeScan
@@ -30,6 +37,10 @@ ApplicationWindow {
             checkable: false
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: {
+                dialogue.scanQR();
+            }
+
         }
     }
 
