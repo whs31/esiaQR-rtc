@@ -19,7 +19,32 @@ QString qmldialogue::scanQR()
     decoder.setDecoder(QZXing::DecoderFormat_QR_CODE);
 
     QString resultQrCode = decoder.decodeImage(qrCodeimageToDecode);
-    qDebug()<<"Scan result: "<<resultQrCode;
-    qDebug()<<"\nSSL status: "<<QSslSocket::supportsSsl();
-    return 0;
+    QString token;
+    if(resultQrCode.startsWith("http"))
+    {
+        //это ссылка
+        qDebug()<<"Scan result: hyperlink found. Verifying hyperlink...";
+        if(resultQrCode.contains("gosuslugi.ru/covid-cert"))
+        {
+            qDebug()<<"Hyperlink verified. Result: "<<resultQrCode;
+            qDebug()<<"\nSSL status: "<<QSslSocket::supportsSsl();
+            if(!QSslSocket::supportsSsl())
+            {
+                qDebug()<<"SSL Error. Aborting...";
+                return "err";
+            } else {
+                //continue url work
+                token = resultQrCode;
+                token.remove(0, 43);
+                token.chop(36);
+                return token;
+            }
+        } else {
+            qDebug()<<"Hyperlink non-verified. Aborting...";
+            return "err";
+        }
+    } else {
+        qDebug()<<"Scan result: no hyperlink found. Aborting...";
+        return "err";
+    }
 }
