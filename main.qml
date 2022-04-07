@@ -10,6 +10,8 @@ ApplicationWindow {
     title: qsTr("Сканер QR")
 
     property var qrlinkNumbers: "0000000";
+    property var fullLink: "example.com";
+    property var unparsedResultString: "value";
 
     Dialogue
     {
@@ -57,6 +59,8 @@ ApplicationWindow {
             anchors.horizontalCenter: parent.horizontalCenter
             onClicked: {
                 qrlinkNumbers = dialogue.scanQR();
+                fullLink = dialogue.getFullLink();
+                unparsedResultString = dialogue.readPage(fullLink);
                 //console.log(qrlinkNumbers);
                 qrlinkOpacityFade();
             }

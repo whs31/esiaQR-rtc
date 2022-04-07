@@ -37,6 +37,7 @@ QString qmldialogue::scanQR()
                 token = resultQrCode;
                 token.remove(0, 43);
                 token.chop(36);
+                fullLink = resultQrCode;
                 return token;
             }
         } else {
@@ -47,4 +48,25 @@ QString qmldialogue::scanQR()
         qDebug()<<"Scan result: no hyperlink found. Aborting...";
         return "err";
     }
+}
+
+QString qmldialogue::getFullLink()
+{
+    return fullLink;
+}
+
+QString qmldialogue::readPage(QString page)
+{
+    QString url = "https://my link here";
+    QNetworkAccessManager manager;
+    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
+    QEventLoop event;
+    connect(response, SIGNAL(finished()), &event, SLOT(quit()));
+    event.exec();
+    QByteArray bytes = response->readAll();
+    QString str = QString::fromUtf8(bytes.data(), bytes.size());
+    int statusCode = response->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    qDebug()<<str;
+    qDebug() << QVariant(statusCode).toString();
+    return str;
 }
